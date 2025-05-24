@@ -1,0 +1,34 @@
+# Define que arquivos texto usem LF (line feed) no fim da linha, padronizando em todos os SOs
+* text=auto eol=lf
+
+# Arquivos de código-fonte Java e Typescript (Angular)
+*.java text
+*.ts text
+*.js text
+*.json text
+*.xml text
+*.html text
+*.css text
+
+# Scripts e wrappers do Maven
+mvnw text
+*.cmd text
+
+# Binários (não tente normalizar linhas neles)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.jar binary
+*.class binary
+*.exe binary
+*.dll binary
+*.so binary
+*.dylib binary
+
+# Arquivos do editor ou IDE que não são texto comum
+*.iml binary
+*.lock binary

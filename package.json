@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@po-ui/ng-components": "^19.12.0"
+  }
+}

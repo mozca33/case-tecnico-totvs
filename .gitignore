@@ -1,0 +1,78 @@
+# Arquivos que não devem ser versionados
+
+# ------------------------
+# Backend (Java + Spring Boot)
+# ------------------------
+
+backend/target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# Diretórios e arquivos comuns de IDEs para Java
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# Logs
+*.log
+
+# Spring Boot logs
+spring.log
+
+# ------------------------
+# Frontend (Angular + Node.js)
+# ------------------------
+
+# Node modules (pacotes npm)
+frontend/node_modules/
+
+# Build output
+frontend/dist/
+frontend/out-tsc/
+
+# Angular CLI cache
+frontend/.angular/cache/
+
+# Editor/IDE
+frontend/.vscode/
+
+# ------------------------
+# Arquivos de sistema e outros
+# ------------------------
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Arquivos temporários e caches
+*.tmp
+*.temp
+
+# Arquivos de log
+*.log
+
+# Arquivos de backup do editor
+*~
