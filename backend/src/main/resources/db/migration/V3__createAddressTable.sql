@@ -1,8 +1,8 @@
 CREATE TABLE addresses (
     id UUID PRIMARY KEY,
     client_id UUID NOT NULL,
-    street VARCHAR(100) NOT NULL,
-    number VARCHAR(10),
+    public_place VARCHAR(100) NOT NULL,
+    street VARCHAR(100),
     city VARCHAR(50),
     state VARCHAR(50),
     zip_code VARCHAR(10),

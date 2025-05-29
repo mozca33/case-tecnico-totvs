@@ -1,60 +1,114 @@
 package com.rafael.clients.domain.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.rafael.clients.common.MessageConstants;
 import com.rafael.clients.domain.exception.ClientException;
 import com.rafael.clients.domain.model.Client;
 import com.rafael.clients.domain.repository.ClientRepository;
-import com.rafael.clients.domain.repository.PhoneRepository;
+import com.rafael.clients.domain.validator.AddressValidator;
+import com.rafael.clients.domain.validator.PhoneValidator;
+
+import br.com.caelum.stella.validation.CPFValidator;
+import br.com.caelum.stella.validation.InvalidStateException;
 
 @Service
 public class ClientDomainService {
 
-    private final PhoneRepository phoneRepository;
     private final ClientRepository clientRepository;
+    private final PhoneValidator phoneValidator;
+    private final AddressValidator addressValidator;
 
-    public ClientDomainService(ClientRepository clientRepository, PhoneRepository phoneRepository) {
+    public ClientDomainService(ClientRepository clientRepository,
+            PhoneValidator phoneValidator, AddressValidator addressValidator) {
         this.clientRepository = clientRepository;
-        this.phoneRepository = phoneRepository;
-    }
-
-    public void validateCpf(String cpf) {
-        if (cpf == null || !isCpfValid(cpf)) {
-            throw new ClientException("CPF invalid: " + cpf);
-        }
-    }
-
-    public void validateDuplicity(Client client) {
-        if (clientRepository.existsByCpf(client.getCpf())) {
-            throw new ClientException("CPF already registered: " + client.getCpf());
-        }
-        if (clientRepository.existsByName(client.getName())) {
-            throw new ClientException("Name already registered: " + client.getName());
-        }
-        client.getPhoneNumber().forEach(phone -> {
-            if (phoneRepository.existsByPhoneNumber(phone.getPhoneNumber())) {
-                throw new ClientException("Phone already registered: " + phone.getPhoneNumber());
-            }
-        });
-    }
-
-    public Client findById(UUID id) {
-        return clientRepository.findById(id)
-                .orElseThrow(() -> new ClientException("Client not found with id: " + id));
+        this.phoneValidator = phoneValidator;
+        this.addressValidator = addressValidator;
     }
 
     public List<Client> findAll() {
         List<Client> clients = clientRepository.findAll();
         if (clients.isEmpty()) {
-            throw new ClientException("No client was found.");
+            throw new ClientException(MessageConstants.NO_CLIENT_WAS_FOUND);
         }
         return clients;
     }
 
-    private boolean isCpfValid(String cpf) {
-        return cpf.matches("\\d{11}");
+    public Client createClient(Client client) {
+        verifyExistsByCpf(client.getCpf());
+        validateClient(client);
+
+        clientRepository.save(client);
+        return client;
+    }
+
+    public Client updateClient(UUID id, Client client) {
+        Client existingClient = findById(id);
+        client.setId(id);
+        existingClient.mergeFrom(client);
+        validateClient(existingClient);
+
+        clientRepository.save(existingClient);
+        return client;
+    }
+
+    public Client findById(UUID id) {
+        return clientRepository.findById(id)
+                .orElseThrow(() -> new ClientException(MessageConstants.CLIENT_NOT_FOUND_WITH_ID + id));
+    }
+
+    public void deleteClient(UUID id) {
+        if (!clientRepository.existsById(id)) {
+            throw new ClientException(MessageConstants.CLIENT_NOT_FOUND);
+        }
+        clientRepository.deleteById(id);
+    }
+
+    /**
+     * Verify if client already exists by CPF
+     * 
+     * @param cpf the cpf to be searched.
+     * @throws ClientException
+     */
+    private void verifyExistsByCpf(String cpf) {
+        if (clientRepository.existsByCpf(cpf)) {
+            throw new ClientException(MessageConstants.CLIENT_ALREADY_EXISTS);
+        }
+    }
+
+    /***
+     * Validates the Cpf utilizing {@link CPFValidator} from caelum.stella.core
+     * 
+     * @param cpf the cpf to be validated.
+     * @throws InvalidStateException.
+     */
+    private void validateCpf(Client client) {
+        try {
+            CPFValidator cpfValidator = new CPFValidator();
+            cpfValidator.isEligible(client.getCpf());
+            cpfValidator.assertValid(client.getCpf());
+        } catch (InvalidStateException e) {
+            throw new ClientException(MessageConstants.INVALID_CPF + client.getCpf());
+        }
+    }
+
+    private void validateClient(Client client) {
+        validateCpf(client);
+        validateName(client);
+        client.getPhoneNumbers().forEach(phoneValidator::validate);
+        client.getAddresses().forEach(addressValidator::validate);
+    }
+
+    private void validateName(Client client) {
+        Optional<Client> optionalClient = clientRepository.findByName(client.getName());
+        optionalClient.ifPresent(existingClient -> {
+            if (!existingClient.getId().equals(client.getId())) {
+                throw new ClientException(MessageConstants.CLIENT_ALREADY_EXISTS_WITH_NAME);
+            }
+        });
     }
 }

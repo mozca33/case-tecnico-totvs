@@ -6,40 +6,21 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.rafael.clients.application.dto.ClientResponseDTO;
-import com.rafael.clients.application.mapper.ClientMapper;
 import com.rafael.clients.domain.model.Client;
-import com.rafael.clients.domain.repository.ClientRepository;
 import com.rafael.clients.domain.service.ClientDomainService;
 
 @Service
 public class ClientService {
 
-    private final ClientRepository clientRepository;
     private final ClientDomainService clientDomainService;
-    private final ClientMapper clientMapper;
 
-    public ClientService(ClientRepository clientRepository, ClientDomainService clientDomainService,
-            ClientMapper clientMapper) {
-        this.clientRepository = clientRepository;
+    public ClientService(ClientDomainService clientDomainService) {
         this.clientDomainService = clientDomainService;
-        this.clientMapper = clientMapper;
     }
 
     @Transactional
-    public ClientResponseDTO createClient(Client client) {
-
-        clientDomainService.validateCpf(client.getCpf());
-        clientDomainService.validateDuplicity(client);
-
-        Client saved = clientRepository.save(client);
-
-        return clientMapper.fromEntity(saved);
-    }
-
-    public ClientResponseDTO searchById(UUID id) {
-
-        return clientMapper.fromEntity(clientDomainService.findById(id));
+    public Client createClient(Client client) {
+        return clientDomainService.createClient(client);
     }
 
     public Client getClientById(UUID id) {
@@ -48,5 +29,20 @@ public class ClientService {
 
     public List<Client> getClients() {
         return clientDomainService.findAll();
+    }
+
+    @Transactional
+    public Client updateClient(UUID id, Client entity) {
+        return clientDomainService.updateClient(id, entity);
+    }
+
+    @Transactional
+    public Client patchClient(UUID id, Client entity) {
+        return clientDomainService.updateClient(id, entity);
+    }
+
+    @Transactional
+    public void deleteClient(UUID id) {
+        clientDomainService.deleteClient(id);
     }
 }

@@ -1,18 +1,21 @@
 package com.rafael.clients.application.dto;
 
-import java.util.List;
+import java.util.Set;
+
+import com.rafael.clients.common.MessageConstants;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public record ClientRequestDTO(
-        @NotBlank @Size(min = 10) String name,
+                @NotBlank @Size(min = 10, max = 255, message = MessageConstants.NAME_CONSTRAINTS) String name,
 
-        @NotBlank String cpf,
+                @NotBlank @Pattern(regexp = "\\d{11}") String cpf,
 
-        @NotEmpty List<PhoneDTO> phones,
+                @NotEmpty Set<PhoneDTO> phones,
 
-        @NotEmpty List<AddressDTO> addresses) {
+                @NotEmpty Set<AddressDTO> addresses) {
 
 }

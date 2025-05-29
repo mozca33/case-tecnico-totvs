@@ -1,6 +1,5 @@
 package com.rafael.clients.application.mapper;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -13,20 +12,30 @@ import com.rafael.clients.domain.model.Address;
 public class AddressMapper {
 
     /**
-     * @param addresses
-     * @return
+     * Converts a Set of {@link Address} entities to a set of
+     * {@link AddressDTO} objects.
+     *
+     * @param addresses the set of {@link Address} entities to be converted.
+     * @return a set of {@link AddressDTO} representing the given entities.
      */
-    public static Set<AddressDTO> fromEntity(final Set<Address> addresses) {
+    public Set<AddressDTO> fromEntity(final Set<Address> addresses) {
         return addresses.stream()
-                .map(address -> new AddressDTO(address.getPublicPlace(), address.getCity(), address.getState(),
-                        address.getCep(), address.getComplement()))
+                .map(address -> new AddressDTO(address.getCity(), address.getState(), address.getZipCode(),
+                        address.getPublicPlace(), address.getStreet(), address.getComplement()))
                 .collect(Collectors.toSet());
     }
 
-    public static Set<Address> toEntity(final List<AddressDTO> addressDTOs) {
+    /**
+     * Converts a Set of {@link AddressDTO} to a set of
+     * {@link Address} objects.
+     *
+     * @param addressDTOs the set of {@link AddressDTO} to be converted.
+     * @return a set of {@link Address} representing the given dto.
+     */
+    public Set<Address> toEntity(final Set<AddressDTO> addressDTOs) {
         return addressDTOs.stream()
-                .map(dto -> new Address(dto.publicPlace(), dto.city(), dto.state(), dto.cep(), dto.complement()))
+                .map(dto -> new Address(dto.city(), dto.state(), dto.zipCode(), dto.publicPlace(), dto.street(),
+                        dto.complement()))
                 .collect(Collectors.toSet());
     }
-
 }

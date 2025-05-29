@@ -1,6 +1,5 @@
 package com.rafael.clients.application.mapper;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -12,7 +11,14 @@ import com.rafael.clients.domain.model.Phone;
 @Component
 public class PhoneMapper {
 
-    public static Set<PhoneDTO> fromEntity(final Set<Phone> phones) {
+    /**
+     * Converts a set of {@link Phone} to a set of
+     * {@link PhoneDTO} object.
+     *
+     * @param phones the set of {@link Phone} to be converted.
+     * @return a set of {@link PhoneDTO} representing the given dto.
+     */
+    public Set<PhoneDTO> fromEntity(final Set<Phone> phones) {
         if (phones == null) {
             return null;
         }
@@ -21,7 +27,14 @@ public class PhoneMapper {
                 .collect(Collectors.toSet());
     }
 
-    public static Set<Phone> toEntity(final List<PhoneDTO> phoneDTOs) {
+    /**
+     * Converts a set of {@link PhoneDTO} to a set of
+     * {@link Phone} object.
+     *
+     * @param phoneDTOs the set of {@link PhoneDTO} to be converted.
+     * @return a set of {@link Phone} representing the given dto.
+     */
+    public Set<Phone> toEntity(final Set<PhoneDTO> phoneDTOs) {
         if (phoneDTOs == null) {
             return null;
         }
@@ -29,5 +42,4 @@ public class PhoneMapper {
                 .map(dto -> new Phone(dto.number()))
                 .collect(Collectors.toSet());
     }
-
 }

@@ -1,15 +1,15 @@
 package com.rafael.clients.domain.model;
 
 import java.util.Objects;
+import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
 @Entity
@@ -17,11 +17,7 @@ import jakarta.persistence.Table;
 public class Address {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false)
-    private String publicPlace;
+    private UUID id;
 
     @Column(nullable = false)
     private String city;
@@ -30,7 +26,13 @@ public class Address {
     private String state;
 
     @Column(nullable = false)
-    private String cep;
+    private String zipCode;
+
+    @Column(nullable = false)
+    private String street;
+
+    @Column(name = "public_place", nullable = false)
+    private String publicPlace;
 
     @Column
     private String complement;
@@ -39,13 +41,15 @@ public class Address {
     @JoinColumn(name = "client_id")
     private Client client;
 
-    protected Address() {
+    public Address() {
     }
 
-    public Address(String publicPlace, String city, String state, String number, String complement) {
-        this.publicPlace = publicPlace;
+    public Address(String city, String state, String zipCode, String publicPlace, String street, String complement) {
         this.city = city;
         this.state = state;
+        this.zipCode = zipCode;
+        this.publicPlace = publicPlace;
+        this.street = street;
         this.complement = complement;
     }
 
@@ -55,6 +59,26 @@ public class Address {
 
     public String getPublicPlace() {
         return publicPlace;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public String getZipCode() {
+        return zipCode;
+    }
+
+    public UUID getId() {
+        return id;
     }
 
     public void setClient(Client client) {
@@ -67,6 +91,22 @@ public class Address {
 
     public void setComplement(String complement) {
         this.complement = complement;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
     }
 
     @Override
@@ -84,27 +124,10 @@ public class Address {
         return Objects.hash(id);
     }
 
-    public String getCity() {
-        return city;
+    @PrePersist
+    public void prePersist() {
+        if (id == null)
+            id = UUID.randomUUID();
     }
 
-    public String getState() {
-        return state;
-    }
-
-    public String getCep() {
-        return cep;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public void setCep(String cep) {
-        this.cep = cep;
-    }
 }

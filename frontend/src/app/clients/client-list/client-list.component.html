@@ -1,0 +1,6 @@
+<po-page-default
+  p-title="Clientes"
+  [p-actions]="[{ label: 'Novo Cliente', action: newClient.bind(this) }]"
+>
+  <po-table [p-columns]="columns" [p-items]="clients"></po-table>
+</po-page-default>

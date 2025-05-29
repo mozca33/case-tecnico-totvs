@@ -76,3 +76,4 @@ Thumbs.db
 
 # Arquivos de backup do editor
 *~
+node_modules

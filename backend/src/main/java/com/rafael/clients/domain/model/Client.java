@@ -24,16 +24,15 @@ public class Client {
     private String cpf;
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Phone> phoneNumber = new HashSet<>();
+    private Set<Phone> phoneNumbers = new HashSet<>();
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Address> addresses = new HashSet<>();
 
-    protected Client() {
+    public Client() {
     }
 
     public Client(String name, String cpf) {
-        this.id = UUID.randomUUID();
         this.name = name;
         this.cpf = cpf;
     }
@@ -50,22 +49,77 @@ public class Client {
         return cpf;
     }
 
-    public Set<Phone> getPhoneNumber() {
-        return phoneNumber;
+    public Set<Phone> getPhoneNumbers() {
+        return phoneNumbers;
     }
 
     public Set<Address> getAddresses() {
         return addresses;
     }
 
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
+
+    public void setPhoneNumbers(Set<Phone> phones) {
+        if (phones != null) {
+            this.phoneNumbers.clear();
+            this.phoneNumbers.addAll(phones);
+        }
+
+    }
+
+    public void setAddresses(Set<Address> addresses) {
+        if (addresses != null) {
+            this.addresses.clear();
+            this.addresses.addAll(addresses);
+        }
+    }
+
     public void addPhone(Phone phone) {
         phone.setClient(this);
-        phoneNumber.add(phone);
+        phoneNumbers.add(phone);
     }
 
     public void addAddress(Address address) {
         address.setClient(this);
         addresses.add(address);
+    }
+
+    public void mergeFrom(Client other) {
+        if (other.getName() != null) {
+            this.name = other.getName();
+        }
+        if (other.getCpf() != null) {
+            this.cpf = other.getCpf();
+        }
+
+        if (other.getAddresses() != null) {
+            for (Address address : other.getAddresses()) {
+                address.setClient(this);
+                this.addresses.add(address);
+            }
+        }
+
+        if (other.getPhoneNumbers() != null) {
+            for (Phone phone : other.getPhoneNumbers()) {
+                phone.setClient(this);
+                this.phoneNumbers.add(phone);
+            }
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     @Override
@@ -78,8 +132,9 @@ public class Client {
         return Objects.equals(this.id, client.id);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
+    @PrePersist
+    public void prePersist() {
+        if (id == null)
+            id = UUID.randomUUID();
     }
 }
