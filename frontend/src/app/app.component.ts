@@ -1,13 +1,18 @@
+import {
+  PoButtonModule,
+  PoPageModule,
+  PoTableModule,
+} from '@po-ui/ng-components';
+import { PoTemplatesModule } from '@po-ui/ng-templates';
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PoPageModule, PoModule } from '@po-ui/ng-components';
 import { ClientService } from './clients/services/client.service';
 import { Client } from './clients/models/client.model';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, PoPageModule, PoModule],
+  imports: [PoTemplatesModule, PoPageModule, PoButtonModule, PoTableModule],
   template: `
     <po-page-default p-title="Clientes">
       <po-button

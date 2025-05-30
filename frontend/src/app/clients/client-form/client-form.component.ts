@@ -11,7 +11,6 @@ import {
 import { ClientService } from '../services/client.service';
 import { Client } from '../models/client.model';
 import { CommonModule } from '@angular/common';
-import { ClientsRoutingModule } from '../client-routing.module';
 
 @Component({
   selector: 'app-client-form',

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Client } from '../models/client.model';
@@ -7,7 +7,7 @@ import { Client } from '../models/client.model';
 export class ClientService {
   private readonly url = '/api/clients';
 
-  constructor(private http: HttpClient) {}
+  constructor(@Inject(HttpClient) private http: HttpClient) {}
 
   getClients(): Observable<Client[]> {
     return this.http.get<Client[]>(this.url);

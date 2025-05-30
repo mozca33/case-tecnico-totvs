@@ -5,7 +5,12 @@ import {
   withInterceptorsFromDi,
 } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { appRoutes } from './app/app.routes';
 
 bootstrapApplication(AppComponent, {
-  providers: [provideHttpClient(withInterceptorsFromDi()), provideAnimations()],
+  providers: [
+    provideHttpClient(withInterceptorsFromDi()),
+    provideAnimations(),
+    appRoutes,
+  ],
 }).catch((err) => console.error(err));
