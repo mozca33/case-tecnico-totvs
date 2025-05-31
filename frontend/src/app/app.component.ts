@@ -1,42 +1,21 @@
-import {
-  PoButtonModule,
-  PoPageModule,
-  PoTableModule,
-} from '@po-ui/ng-components';
-import { PoTemplatesModule } from '@po-ui/ng-templates';
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ClientService } from './clients/services/client.service';
-import { Client } from './clients/models/client.model';
+import { PoMenuItem } from '@po-ui/ng-components';
 
 @Component({
   selector: 'app-root',
-  standalone: true,
-  imports: [PoTemplatesModule, PoPageModule, PoButtonModule, PoTableModule],
-  template: `
-    <po-page-default p-title="Clientes">
-      <po-button
-        p-label="Buscar clientes"
-        (p-click)="loadClients()"
-      ></po-button>
-      <po-table [p-items]="clients" [p-columns]="columns"></po-table>
-    </po-page-default>
-  `,
+  standalone: false,
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  clients: Client[] = [];
-  columns = [
-    { property: 'name', label: 'Nome' },
-    { property: 'cpf', label: 'CPF' },
-    { property: 'phones', label: 'Telefones' },
-    { property: 'addresses', label: 'Endereços' },
+  title = 'TOTVS Case Técnico';
+
+  readonly menus: Array<PoMenuItem> = [
+    { label: 'Home', action: this.onClick.bind(this) },
+    { label: 'Usuários', action: this.onClick.bind(this) },
   ];
 
-  constructor(private clientService: ClientService) {}
-
-  loadClients() {
-    this.clientService.getClients().subscribe((data) => {
-      this.clients = data;
-    });
+  private onClick() {
+    console.log('click');
   }
 }
