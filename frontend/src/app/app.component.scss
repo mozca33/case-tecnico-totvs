@@ -1,0 +1,16 @@
+.main-container {
+  height: 100vh;
+  flex-direction: column;
+}
+
+.content-wrapper {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  transition: margin-left 0.3s ease;
+  margin-left: 20%;
+}
+
+.content-wrapper.menu-collapsed {
+  margin-left: 5%;
+}

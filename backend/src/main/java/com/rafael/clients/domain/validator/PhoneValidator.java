@@ -23,12 +23,13 @@ public class PhoneValidator {
      */
     public void validate(Phone phone) {
         if (!phone.isValid()) {
-            throw new ClientException(MessageConstants.INVALID_PHONE_NUMBER);
+            throw new ClientException(MessageConstants.INVALID_PHONE_NUMBER + phone.getPhoneNumber());
         }
         if (phone.getPhoneNumber() == null || phone.getPhoneNumber().isBlank()) {
             throw new ClientException(MessageConstants.PHONE_MUST_NOT_BE_BLANK);
         }
-        if (phoneRepository.existsByPhoneNumber(phone.getPhoneNumber())) {
+
+        if(phoneRepository.existsByDddAndMainNumberAndClientIdNot(phone.getDdd(), phone.getMainNumber(), phone.getClient().getId())){
             throw new ClientException(MessageConstants.PHONE_ALREADY_REGISTERED + phone.getPhoneNumber());
         }
     }

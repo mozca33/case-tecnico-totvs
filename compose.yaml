@@ -36,6 +36,11 @@ services:
             SPRING_DATASOURCE_PASSWORD: root
             SPRING_JPA_HIBERNATE_DDL_AUTO: update
             SPRING_PROFILES_ACTIVE: docker
+            SPRING.FLYWAY.ENABLED: true
+            SPRING.FLYWAY.BASELINE-ON-MIGRATE: true
+            SPRING.FLYWAY.LOCATIONS: classpath:db/migration
+            SPRINGDOC_SWAGGER-UI_ENABLED: true
+            SPRINGDOC_API-DOCS_ENABLED: true
 
         restart: on-failure
         networks:

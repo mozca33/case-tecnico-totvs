@@ -15,21 +15,33 @@ import jakarta.persistence.UniqueConstraint;
 
 @Entity
 @Table(name = "phones", uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "phone_number" })
+        @UniqueConstraint(columnNames = { "id" })
 })
 public class Phone {
 
     @Id
     private UUID id = UUID.randomUUID();
 
-    @Column(name = "phone_number", nullable = false, unique = true)
+    @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
+    
+    @Column(name = "ddd", nullable = false, length = 2)
+    private String ddd;
+
+    @Column(name = "main_number", nullable = false, length = 9)
+    private String mainNumber;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id")
     private Client client;
 
     public Phone() {
+    }
+
+    public Phone(String phoneNumber, String ddd, String mainNumber) {
+        this.phoneNumber = phoneNumber;
+        this.ddd = ddd;
+        this.mainNumber = mainNumber;
     }
 
     public Phone(String phoneNumber) {
@@ -42,6 +54,26 @@ public class Phone {
 
     public String getPhoneNumber() {
         return this.phoneNumber;
+    }
+
+    public String getDdd() {
+        return ddd;
+    }
+
+    public String getMainNumber() {
+        return mainNumber;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setMainNumber(String mainNumber) {
+        this.mainNumber = mainNumber;
+    }
+
+    public void setDdd(String ddd) {
+        this.ddd = ddd;
     }
 
     public void setClient(Client client) {
@@ -59,7 +91,7 @@ public class Phone {
         if (!(object instanceof Phone))
             return false;
         Phone phone = (Phone) object;
-        return phoneNumber.equals(phone.phoneNumber);
+        return Objects.equals(ddd, phone.ddd) && Objects.equals(mainNumber, phone.mainNumber);
     }
 
     @Override

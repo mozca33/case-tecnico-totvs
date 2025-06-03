@@ -1,0 +1,9 @@
+<po-modal #clientModal p-title="Client Details">
+  <po-info p-label="Name" [p-value]="client.name"></po-info>
+  <po-divider></po-divider>
+  <po-info p-label="CPF" [p-value]="client.cpf"></po-info>
+  <po-divider></po-divider>
+  <p><b>Phones:</b> {{ client.phones | phoneList }}</p>
+  <po-divider></po-divider>
+  <p><b>Addresses:</b> {{ client.addresses | addressList }}</p>
+</po-modal>

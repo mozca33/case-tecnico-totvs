@@ -1,0 +1,17 @@
+.client-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.client-details {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.phone-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

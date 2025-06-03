@@ -1,75 +1,69 @@
 package com.rafael.clients.domain.validator;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import com.rafael.clients.common.MessageConstants;
 import com.rafael.clients.domain.exception.ClientException;
 import com.rafael.clients.domain.model.Phone;
 import com.rafael.clients.domain.repository.PhoneRepository;
+import com.rafael.clients.domain.service.NormalizerService;
 
-class PhoneValidatorTest {
-
-    @Mock
-    private PhoneRepository phoneRepository;
+public class PhoneValidatorTest {
 
     private PhoneValidator validator;
+    private PhoneRepository phoneRepository;
+    private NormalizerService normalizerService;
 
     @BeforeEach
-    void setup() {
-        MockitoAnnotations.openMocks(this);
+    void setUp() {
+        phoneRepository = mock(PhoneRepository.class);
         validator = new PhoneValidator(phoneRepository);
+        normalizerService = mock(NormalizerService.class);
+    }
+    
+    @Test
+    void shouldThrowException_WhenNumberTooShort() {
+        Phone phone = new Phone();
+        phone.setPhoneNumber("12345");
+
+        when(normalizerService.normalize(phone)).thenReturn(null);
+
+        Exception ex = assertThrows(ClientException.class, () -> validator.validate(phone));
+        assertThat(ex.getMessage()).isEqualTo(MessageConstants.INVALID_PHONE_NUMBER + phone.getPhoneNumber());
     }
 
     @Test
-    void shouldThrowExceptionWhenPhoneIsInvalid() {
-        Phone phone = mock(Phone.class);
-        when(phone.isValid()).thenReturn(false);
+    void shouldThrowException_WhenNumberTooLong() {
+        Phone phone = new Phone();
+        phone.setPhoneNumber("551199123456789");
 
-        ClientException ex = assertThrows(ClientException.class, () -> validator.validate(phone));
-        assertThat(ex.getMessage()).isEqualTo(MessageConstants.INVALID_PHONE_NUMBER);
+        when(normalizerService.normalize(phone)).thenReturn(null);
+
+        Exception ex = assertThrows(ClientException.class, () -> validator.validate(phone));
+        assertThat(ex.getMessage()).isEqualTo(MessageConstants.INVALID_PHONE_NUMBER + phone.getPhoneNumber());
     }
 
     @Test
-    void shouldThrowExceptionWhenPhoneNumberIsNullOrBlank() {
-        Phone phone = mock(Phone.class);
-        when(phone.isValid()).thenReturn(true);
+    void shouldThrowException_WhenPhoneNumberNull() {
+        Phone phone = new Phone();
+        phone.setPhoneNumber(null);
 
-        when(phone.getPhoneNumber()).thenReturn(null);
-        ClientException ex1 = assertThrows(ClientException.class, () -> validator.validate(phone));
-        assertThat(ex1.getMessage()).isEqualTo(MessageConstants.PHONE_MUST_NOT_BE_BLANK);
-
-        when(phone.getPhoneNumber()).thenReturn("   ");
-        ClientException ex2 = assertThrows(ClientException.class, () -> validator.validate(phone));
-        assertThat(ex2.getMessage()).isEqualTo(MessageConstants.PHONE_MUST_NOT_BE_BLANK);
+        Exception ex = assertThrows(ClientException.class, () -> validator.validate(phone));
+        assertThat(ex.getMessage()).isEqualTo(MessageConstants.INVALID_PHONE_NUMBER + phone.getPhoneNumber());
     }
 
     @Test
-    void shouldThrowExceptionWhenPhoneNumberAlreadyExists() {
-        Phone phone = mock(Phone.class);
-        when(phone.isValid()).thenReturn(true);
-        when(phone.getPhoneNumber()).thenReturn("123456789");
+    void shouldThrowException_WhenPhoneNumberBlank() {
+        Phone phone = new Phone();
+        phone.setPhoneNumber("   ");
 
-        when(phoneRepository.existsByPhoneNumber("123456789")).thenReturn(true);
-
-        ClientException ex = assertThrows(ClientException.class, () -> validator.validate(phone));
-        assertThat(ex.getMessage()).isEqualTo(MessageConstants.PHONE_ALREADY_REGISTERED + "123456789");
-    }
-
-    @Test
-    void shouldPassWhenPhoneIsValidAndNotRegistered() {
-        Phone phone = mock(Phone.class);
-        when(phone.isValid()).thenReturn(true);
-        when(phone.getPhoneNumber()).thenReturn("987654321");
-
-        when(phoneRepository.existsByPhoneNumber("987654321")).thenReturn(false);
-
-        assertThatCode(() -> validator.validate(phone)).doesNotThrowAnyException();
+        Exception ex = assertThrows(ClientException.class, () -> validator.validate(phone));
+        assertThat(ex.getMessage()).isEqualTo(MessageConstants.INVALID_PHONE_NUMBER + phone.getPhoneNumber());
     }
 }

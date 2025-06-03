@@ -1,11 +1,20 @@
 package com.rafael.clients.domain.model;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "clients", uniqueConstraints = {
@@ -23,11 +32,11 @@ public class Client {
     @Column(nullable = false, unique = true, length = 11)
     private String cpf;
 
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Phone> phoneNumbers = new HashSet<>();
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Phone> phoneNumbers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Address> addresses = new HashSet<>();
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Address> addresses = new ArrayList<>();
 
     public Client() {
     }
@@ -49,11 +58,11 @@ public class Client {
         return cpf;
     }
 
-    public Set<Phone> getPhoneNumbers() {
+    public List<Phone> getPhoneNumbers() {
         return phoneNumbers;
     }
 
-    public Set<Address> getAddresses() {
+    public List<Address> getAddresses() {
         return addresses;
     }
 
@@ -69,18 +78,23 @@ public class Client {
         this.cpf = cpf;
     }
 
-    public void setPhoneNumbers(Set<Phone> phones) {
+    public void setPhoneNumbers(List<Phone> phones) {
+        this.phoneNumbers.clear();
+        
         if (phones != null) {
-            this.phoneNumbers.clear();
-            this.phoneNumbers.addAll(phones);
+            for (Phone phone : phones) {
+                addPhone(phone);
+            }
         }
-
     }
 
-    public void setAddresses(Set<Address> addresses) {
+    public void setAddresses(List<Address> addresses) {
+        this.addresses.clear();
+        
         if (addresses != null) {
-            this.addresses.clear();
-            this.addresses.addAll(addresses);
+            for (Address address : addresses) {
+                addAddress(address);
+            }
         }
     }
 
@@ -96,24 +110,20 @@ public class Client {
 
     public void mergeFrom(Client other) {
         if (other.getName() != null) {
-            this.name = other.getName();
+            this.name = other.getName();    
         }
         if (other.getCpf() != null) {
             this.cpf = other.getCpf();
         }
 
         if (other.getAddresses() != null) {
-            for (Address address : other.getAddresses()) {
-                address.setClient(this);
-                this.addresses.add(address);
-            }
+            this.getAddresses().clear();
+            this.getAddresses().addAll(other.getAddresses());
         }
 
         if (other.getPhoneNumbers() != null) {
-            for (Phone phone : other.getPhoneNumbers()) {
-                phone.setClient(this);
-                this.phoneNumbers.add(phone);
-            }
+            this.getPhoneNumbers().clear();
+            this.getPhoneNumbers().addAll(other.getPhoneNumbers());
         }
     }
 

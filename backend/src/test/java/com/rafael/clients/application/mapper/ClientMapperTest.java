@@ -32,16 +32,15 @@ class ClientMapperTest {
     @Test
     void fromEntity_shouldConvertClientToDTO() {
         UUID id = UUID.randomUUID();
-        Set<Phone> phones = Set.of(new Phone("999999999"));
-        Set<Address> addresses = Set.of(new Address("São Paulo", "SP", "01000-000", "Av. Paulista", "123", "Apto 101"));
+        List<Phone> phones = List.of(new Phone("999999999"));
+        List<Address> addresses = List.of(new Address("São Paulo", "SP", "01000-000", "Av. Paulista", "Apto 101", "123", null));
         Client client = new Client("João", "12345678900");
         client.setId(id);
         phones.forEach(client::addPhone);
         addresses.forEach(client::addAddress);
 
-        Set<PhoneDTO> phoneDTOs = Set.of(new PhoneDTO("11999999999"));
-        Set<AddressDTO> addressDTOs = Set
-                .of(new AddressDTO("São Paulo", "SP", "01000-000", "Av. Paulista", "123", "Apto 101"));
+        List<PhoneDTO> phoneDTOs = List.of(new PhoneDTO("11999999999"));
+        List<AddressDTO> addressDTOs = List.of(new AddressDTO("São Paulo", "SP", "01000-000", "Apto 101", "Av. Paulista", null, "123"));
 
         when(phoneMapper.fromEntity(phones)).thenReturn(phoneDTOs);
         when(addressMapper.fromEntity(addresses)).thenReturn(addressDTOs);
@@ -61,17 +60,16 @@ class ClientMapperTest {
         Client client = new Client("Maria", "09876543210");
         client.setId(UUID.randomUUID());
 
-        Set<Phone> phones = Set.of(new Phone("21888888888"));
-        Set<Address> addresses = Set.of(new Address("Rio de Janeiro", "RJ", "20000-000", "Rua Central", "456", "Casa"));
+        List<Phone> phones = List.of(new Phone("21888888888"));
+        List<Address> addresses = List.of(new Address("Rio de Janeiro", "RJ", "20000-000", "Rua Central", "Casa", "456", null));
 
         client.setPhoneNumbers(phones);
         client.setAddresses(addresses);
 
         clients.add(client);
 
-        Set<PhoneDTO> phoneDTOs = Set.of(new PhoneDTO("888888888"));
-        Set<AddressDTO> addressDTOs = Set
-                .of(new AddressDTO("Rio de Janeiro", "RJ", "20000-000", "Rua Central", "456", "Casa"));
+        List<PhoneDTO> phoneDTOs = List.of(new PhoneDTO("888888888"));
+        List<AddressDTO> addressDTOs = List.of(new AddressDTO("Rio de Janeiro", "RJ", "20000-000", "Casa", "Rua Central", null, "456"));
 
         when(phoneMapper.fromEntity(phones)).thenReturn(phoneDTOs);
         when(addressMapper.fromEntity(addresses)).thenReturn(addressDTOs);
@@ -84,13 +82,11 @@ class ClientMapperTest {
 
     @Test
     void toEntity_shouldConvertDTOToClient() {
-        Set<PhoneDTO> phoneDTOs = Set.of(new PhoneDTO("777777777"));
-        Set<AddressDTO> addressDTOs = Set
-                .of(new AddressDTO("Belo Horizonte", "MG", "30000-000", "Av. Afonso Pena", "789", "Sala 2"));
+        List<PhoneDTO> phoneDTOs = List.of(new PhoneDTO("777777777"));
+        List<AddressDTO> addressDTOs = List.of(new AddressDTO("Belo Horizonte", "MG", "30000-000", "Sala 2", "Av. Afonso Pena", null, "789"));
 
-        Set<Phone> phones = Set.of(new Phone("777777777"));
-        Set<Address> addresses = Set
-                .of(new Address("Belo Horizonte", "MG", "30000-000", "Av. Afonso Pena", "789", "Sala 2"));
+        List<Phone> phones = List.of(new Phone("777777777"));
+        List<Address> addresses = List.of(new Address("Belo Horizonte", "MG", "30000-000", "Av. Afonso Pena", "Sala 2", "789", null));
 
         ClientRequestDTO dto = new ClientRequestDTO("Carlos", "11122233344", phoneDTOs, addressDTOs);
 
@@ -108,13 +104,11 @@ class ClientMapperTest {
     @Test
     void toEntity_withId_shouldSetIdAndConvertDTOToClient() {
         UUID id = UUID.randomUUID();
-        Set<PhoneDTO> phoneDTOs = Set.of(new PhoneDTO("666666666"));
-        Set<AddressDTO> addressDTOs = Set
-                .of(new AddressDTO("Porto Alegre", "RS", "90000-000", "Av. Ipiranga", "321", "Bloco C"));
+        List<PhoneDTO> phoneDTOs = List.of(new PhoneDTO("666666666"));
+        List<AddressDTO> addressDTOs = List.of(new AddressDTO("Porto Alegre", "RS", "90000-000", "Bloco C", "Av. Ipiranga", null, "321"));
 
-        Set<Phone> phones = Set.of(new Phone("666666666"));
-        Set<Address> addresses = Set
-                .of(new Address("Porto Alegre", "RS", "90000-000", "Av. Ipiranga", "321", "Bloco C"));
+        List<Phone> phones = List.of(new Phone("666666666"));
+        List<Address> addresses = List.of(new Address("Porto Alegre", "RS", "90000-000", "Av. Ipiranga", "Bloco C", "321", null));
 
         ClientRequestDTO dto = new ClientRequestDTO("Ana", "55566677788", phoneDTOs, addressDTOs);
 

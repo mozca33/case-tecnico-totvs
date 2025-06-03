@@ -1,0 +1,149 @@
+<po-modal #clientModal p-title="Form Client">
+  <form *ngIf="clientForm" [formGroup]="clientForm">
+    <div class="po-row">
+      <po-input
+        class="po-md-6"
+        p-label="Client Name"
+        formControlName="name"
+        p-required="true"
+        [p-help]="getFieldErrorMessage('name')"
+        [class.field-error]="hasFieldError('name')"
+      ></po-input>
+
+      <po-input
+        class="po-md-6"
+        p-label="CPF"
+        formControlName="cpf"
+        p-required="true"
+        [p-help]="getFieldErrorMessage('email')"
+        [class.field-error]="hasFieldError('email')"
+      ></po-input>
+    </div>
+
+    <po-divider p-label="Phones"></po-divider>
+    <div formArrayName="phones">
+      <div
+        *ngFor="let phoneGroup of Phones.controls; let i = index"
+        [formGroupName]="i"
+        class="po-row po-mb-2"
+      >
+        <po-input
+          class="po-md-5"
+          p-label="Phone Number"
+          formControlName="number"
+          p-required="true"
+          p-additional-help-tooltip="System only supports brazilian numbers (+55). Acceptable formats: 11999998888 or (11) 99999-8888"
+          [p-help]="getFieldErrorMessage('number')"
+          [class.field-error]="hasFieldError('number')"
+        ></po-input>
+        <div class="po-md-2 po-text-right">
+          <po-button
+            p-icon="po-icon-delete"
+            p-kind="danger"
+            p-tooltip="Remove Phone"
+            (p-click)="removePhone(i)"
+          ></po-button>
+        </div>
+      </div>
+    </div>
+    <po-button
+      p-icon="po-icon-plus"
+      p-label="Add Phone"
+      (p-click)="addPhone()"
+      class="po-mb-4"
+    ></po-button>
+
+    <po-divider p-label="Addresses"></po-divider>
+    <div formArrayName="addresses">
+      <div
+        *ngFor="let addressGroup of Addresses.controls; let i = index"
+        [formGroupName]="i"
+        class="po-mb-2 po-border-top po-p-2"
+      >
+        <div class="po-row">
+          <po-input
+            class="po-md-6"
+            p-label="Street"
+            formControlName="street"
+            p-required="true"
+            [p-help]="getFieldErrorMessage('street')"
+            [class.field-error]="hasFieldError('street')"
+          ></po-input>
+          <po-input
+            class="po-md-3"
+            p-label="Number"
+            formControlName="number"
+          ></po-input>
+          <po-input
+            class="po-md-3"
+            p-label="Complement"
+            formControlName="complement"
+            p-required="true"
+            [p-help]="getFieldErrorMessage('complement')"
+            [class.field-error]="hasFieldError('complement')"
+          ></po-input>
+        </div>
+        <div class="po-row">
+          <po-input
+            class="po-md-4"
+            p-label="City"
+            formControlName="city"
+            p-required="true"
+            [p-help]="getFieldErrorMessage('city')"
+            [class.field-error]="hasFieldError('city')"
+          ></po-input>
+          <po-input
+            class="po-md-4"
+            p-label="State"
+            formControlName="state"
+            p-required="true"
+            [p-help]="getFieldErrorMessage('state')"
+            [class.field-error]="hasFieldError('state')"
+          ></po-input>
+        </div>
+        <div class="po-row po-mb-2">
+          <po-input
+            class="po-md-6"
+            p-label="Zip Code"
+            formControlName="zipCode"
+            p-required="true"
+            [p-help]="getFieldErrorMessage('zipCode')"
+            [class.field-error]="hasFieldError('zipCode')"
+          ></po-input>
+          <po-input
+            class="po-md-4"
+            p-label="Public Place"
+            formControlName="publicPlace"
+          ></po-input>
+          <div class="po-md-2 po-text-right">
+            <po-button
+              p-icon="po-icon-delete"
+              p-kind="danger"
+              p-tooltip="Remove Address"
+              (p-click)="removeAddress(i)"
+            ></po-button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <po-button
+      p-icon="po-icon-plus"
+      p-label="Add Address"
+      (p-click)="addAddress()"
+      class="po-mb-4"
+    ></po-button>
+
+    <div class="po-modal-footer">
+      <po-button
+        p-label="Save"
+        [p-disabled]="clientForm.invalid"
+        (p-click)="saveClient()"
+      ></po-button>
+      <po-button
+        p-label="Cancel"
+        (p-click)="closeModal()"
+        p-kind="secondary"
+      ></po-button>
+    </div>
+  </form>
+</po-modal>

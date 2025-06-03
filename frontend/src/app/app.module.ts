@@ -1,26 +1,10 @@
-import { HttpClientModule, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
+import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-
-import {
-  PoToolbarModule,
-  PoMenuModule,
-  PoPageModule,
-  PoHttpRequestModule,
-  PoButtonModule,
-  PoFieldModule,
-  PoInfoModule,
-  PoLoadingModule,
-  PoNotificationModule,
-  PoTableModule,
-  PoModalModule,
-  PoDialogModule
-} from '@po-ui/ng-components';
+import { SharedModule } from './shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -29,21 +13,8 @@ import {
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    FormsModule,
-    ReactiveFormsModule,
     AppRoutingModule,
-    PoToolbarModule,
-    PoMenuModule,
-    PoPageModule,
-    PoHttpRequestModule,
-    PoButtonModule,
-    PoFieldModule,
-    PoInfoModule,
-    PoLoadingModule,
-    PoNotificationModule,
-    PoTableModule,
-    PoModalModule,
-    PoDialogModule,
+    SharedModule
   ],
   providers: [provideHttpClient(withInterceptorsFromDi())],
   bootstrap: [AppComponent]

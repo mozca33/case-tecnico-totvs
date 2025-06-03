@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.rafael.clients.domain.model.Client;
 import com.rafael.clients.domain.service.ClientDomainService;
@@ -18,7 +17,6 @@ public class ClientService {
         this.clientDomainService = clientDomainService;
     }
 
-    @Transactional
     public Client createClient(Client client) {
         return clientDomainService.createClient(client);
     }
@@ -31,17 +29,10 @@ public class ClientService {
         return clientDomainService.findAll();
     }
 
-    @Transactional
     public Client updateClient(UUID id, Client entity) {
         return clientDomainService.updateClient(id, entity);
     }
 
-    @Transactional
-    public Client patchClient(UUID id, Client entity) {
-        return clientDomainService.updateClient(id, entity);
-    }
-
-    @Transactional
     public void deleteClient(UUID id) {
         clientDomainService.deleteClient(id);
     }

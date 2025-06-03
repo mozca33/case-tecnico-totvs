@@ -14,7 +14,9 @@ import com.rafael.clients.domain.validator.AddressValidator;
 import com.rafael.clients.domain.validator.PhoneValidator;
 
 import br.com.caelum.stella.validation.CPFValidator;
-import br.com.caelum.stella.validation.InvalidStateException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 
 @Service
 public class ClientDomainService {
@@ -22,6 +24,9 @@ public class ClientDomainService {
     private final ClientRepository clientRepository;
     private final PhoneValidator phoneValidator;
     private final AddressValidator addressValidator;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     public ClientDomainService(ClientRepository clientRepository,
             PhoneValidator phoneValidator, AddressValidator addressValidator) {
@@ -38,6 +43,7 @@ public class ClientDomainService {
         return clients;
     }
 
+    @Transactional
     public Client createClient(Client client) {
         verifyExistsByCpf(client.getCpf());
         validateClient(client);
@@ -46,9 +52,11 @@ public class ClientDomainService {
         return client;
     }
 
+    @Transactional
     public Client updateClient(UUID id, Client client) {
         Client existingClient = findById(id);
         client.setId(id);
+
         existingClient.mergeFrom(client);
         validateClient(existingClient);
 
@@ -61,6 +69,7 @@ public class ClientDomainService {
                 .orElseThrow(() -> new ClientException(MessageConstants.CLIENT_NOT_FOUND_WITH_ID + id));
     }
 
+    @Transactional
     public void deleteClient(UUID id) {
         if (!clientRepository.existsById(id)) {
             throw new ClientException(MessageConstants.CLIENT_NOT_FOUND);
@@ -87,13 +96,8 @@ public class ClientDomainService {
      * @throws InvalidStateException.
      */
     private void validateCpf(Client client) {
-        try {
-            CPFValidator cpfValidator = new CPFValidator();
-            cpfValidator.isEligible(client.getCpf());
-            cpfValidator.assertValid(client.getCpf());
-        } catch (InvalidStateException e) {
-            throw new ClientException(MessageConstants.INVALID_CPF + client.getCpf());
-        }
+        CPFValidator cpfValidator = new CPFValidator();
+        cpfValidator.assertValid(client.getCpf());
     }
 
     private void validateClient(Client client) {
@@ -104,11 +108,10 @@ public class ClientDomainService {
     }
 
     private void validateName(Client client) {
-        Optional<Client> optionalClient = clientRepository.findByName(client.getName());
-        optionalClient.ifPresent(existingClient -> {
-            if (!existingClient.getId().equals(client.getId())) {
-                throw new ClientException(MessageConstants.CLIENT_ALREADY_EXISTS_WITH_NAME);
-            }
-        });
+        Optional<Client> duplicate = clientRepository.findByNameAndIdNot(client.getName(), client.getId());
+        if (duplicate.isPresent()) {
+            throw new ClientException(MessageConstants.CLIENT_ALREADY_EXISTS_WITH_NAME);
+        }
     }
+
 }

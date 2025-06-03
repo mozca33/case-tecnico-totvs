@@ -9,7 +9,6 @@ import static org.mockito.Mockito.when;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -26,6 +25,8 @@ import com.rafael.clients.domain.model.Phone;
 import com.rafael.clients.domain.repository.ClientRepository;
 import com.rafael.clients.domain.validator.AddressValidator;
 import com.rafael.clients.domain.validator.PhoneValidator;
+
+import br.com.caelum.stella.validation.InvalidStateException;
 
 class ClientDomainServiceTest {
 
@@ -49,11 +50,11 @@ class ClientDomainServiceTest {
         id = UUID.randomUUID();
         client = new Client();
         client.setId(id);
-        client.setCpf("12345678909"); // CPF válido fictício
+        client.setCpf("12345678909");
         client.setName("John Doe");
-        client.setPhoneNumbers(Set.of(new Phone("987654321")));
-        client.setAddresses(Set
-                .of(new Address("city", "state", "12345-678", "public place", "street", "complement of the address")));
+        client.setPhoneNumbers(List.of(new Phone("987654321")));
+        client.setAddresses(List
+                .of(new Address("city", "state", "12345-678", "street", "street", null, null)));
     }
 
     @Test
@@ -77,7 +78,7 @@ class ClientDomainServiceTest {
     @Test
     void createClient_shouldSaveValidClient() {
         when(clientRepository.existsByCpf(client.getCpf())).thenReturn(false);
-        when(clientRepository.findByName(client.getName())).thenReturn(Optional.empty());
+        when(clientRepository.existsByNameAndIdNot(client.getName(), client.getId())).thenReturn(false);
 
         Client created = clientDomainService.createClient(client);
 
@@ -100,7 +101,7 @@ class ClientDomainServiceTest {
         existingClient.setName("Old Name");
 
         when(clientRepository.findById(id)).thenReturn(Optional.of(existingClient));
-        when(clientRepository.findByName(client.getName())).thenReturn(Optional.empty());
+        when(clientRepository.existsByNameAndIdNot(client.getName(), client.getId())).thenReturn( false);
 
         Client updated = clientDomainService.updateClient(id, client);
 
@@ -154,7 +155,7 @@ class ClientDomainServiceTest {
     void validateCpf_shouldThrowException_whenInvalidCpf() {
         client.setCpf("11111111111"); // CPF inválido
 
-        assertThrows(ClientException.class, () -> clientDomainService.createClient(client));
+        assertThrows(InvalidStateException.class, () -> clientDomainService.createClient(client));
     }
 
     @Test
@@ -162,9 +163,9 @@ class ClientDomainServiceTest {
         Client existingClient = new Client();
         existingClient.setId(UUID.randomUUID());
         when(clientRepository.existsByCpf(client.getCpf())).thenReturn(false);
-        when(clientRepository.findByName(client.getName())).thenReturn(Optional.of(existingClient));
+        when(clientRepository.existsByNameAndIdNot(client.getName(), client.getId())).thenReturn(true);
 
-        ClientException ex = assertThrows(ClientException.class, () -> clientDomainService.createClient(client));
+        InvalidStateException ex = assertThrows(InvalidStateException.class, () -> clientDomainService.createClient(client));
         assertEquals(MessageConstants.CLIENT_ALREADY_EXISTS_WITH_NAME, ex.getMessage());
     }
 }

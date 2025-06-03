@@ -1,8 +1,10 @@
 package com.rafael.clients.application.mapper;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Set;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,49 +23,51 @@ class AddressMapperTest {
 
     @Test
     void fromEntity_shouldConvertAddressSetToDTOSet() {
-        Address address = new Address("São Paulo", "SP", "01000-000", "Av. Paulista", "123", "Apto 101");
-        Set<Address> addresses = Set.of(address);
+        Address address = new Address("São Paulo", "SP", "Av. Paulista", "Apto 101","01000-000", "123", null);
+        List<Address> addresses = List.of(address);
 
-        Set<AddressDTO> dtos = addressMapper.fromEntity(addresses);
+        List<AddressDTO> dtos = addressMapper.fromEntity(addresses);
 
         assertEquals(1, dtos.size());
 
         AddressDTO dto = dtos.iterator().next();
         assertEquals("São Paulo", dto.city());
         assertEquals("SP", dto.state());
+        assertEquals("Av. Paulista", dto.street()); 
         assertEquals("01000-000", dto.zipCode());
-        assertEquals("Av. Paulista", dto.publicPlace());
-        assertEquals("123", dto.street());
-        assertEquals("Apto 101", dto.complement());
+        assertEquals("Apto 101", dto.complement()); 
+        assertEquals("123", dto.number());
+        assertNull(dto.publicPlace()); 
     }
 
     @Test
     void fromEntity_shouldReturnEmptySet_whenInputIsEmpty() {
-        Set<AddressDTO> result = addressMapper.fromEntity(Set.of());
+        List<AddressDTO> result = addressMapper.fromEntity(List.of());
         assertTrue(result.isEmpty());
     }
 
     @Test
     void toEntity_shouldConvertDTOSetToAddressSet() {
-        AddressDTO dto = new AddressDTO("São Paulo", "SP", "01000-000", "Av. Paulista", "123", "Apto 101");
-        Set<AddressDTO> dtos = Set.of(dto);
+        AddressDTO dto = new AddressDTO("São Paulo", "SP", "Av. Paulista", "Apto 101","01000-000", null, "123");
+        List<AddressDTO> dtos = List.of(dto);
 
-        Set<Address> addresses = addressMapper.toEntity(dtos);
+        List<Address> addresses = addressMapper.toEntity(dtos);
 
         assertEquals(1, addresses.size());
 
         Address address = addresses.iterator().next();
         assertEquals("São Paulo", address.getCity());
         assertEquals("SP", address.getState());
+        assertEquals("Apto 101", address.getComplement()); 
+        assertEquals("Av. Paulista", address.getStreet());
         assertEquals("01000-000", address.getZipCode());
-        assertEquals("Av. Paulista", address.getPublicPlace());
-        assertEquals("123", address.getStreet());
-        assertEquals("Apto 101", address.getComplement());
+        assertNull(address.getNumber()); 
+        assertEquals("123", address.getPublicPlace()); 
     }
 
     @Test
     void toEntity_shouldReturnEmptySet_whenInputIsEmpty() {
-        Set<Address> result = addressMapper.toEntity(Set.of());
+        List<Address> result = addressMapper.toEntity(List.of());
         assertTrue(result.isEmpty());
     }
 }

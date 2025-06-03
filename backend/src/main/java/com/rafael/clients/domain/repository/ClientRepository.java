@@ -13,7 +13,11 @@ public interface ClientRepository extends JpaRepository<Client, UUID> {
 
     boolean existsByName(String name);
 
+    boolean existsByNameAndIdNot(String name, UUID id);
+
+    boolean existsByCpfAndIdNot(String cpf, UUID id);
+    
     Optional<Client> findByCpf(String cpf);
 
-    Optional<Client> findByName(String name);
+    Optional<Client> findByNameAndIdNot(String name, UUID id);
 }

@@ -97,6 +97,9 @@ class AddressValidatorTest {
         address.setCity("São Paulo");
         address.setState("SP");
         address.setZipCode("12345-678");
+        address.setPublicPlace(null);
+        address.setNumber("123L");
+        address.setComplement("Qd 132 Lt 213");
         return address;
     }
 }

@@ -1,0 +1,72 @@
+<po-page-default
+  p-title="Customer Management System"
+  [p-actions]="[]"
+  [p-breadcrumb]="{ items: [{ label: 'Home' }] }"
+>
+  <div class="home-container">
+    <div class="welcome-section">
+      <h2 class="welcome-title">Welcome to Customer Management</h2>
+      <p class="welcome-description">
+        Manage your customers efficiently with our comprehensive system. Add new
+        customers, view existing ones, and keep all information organized.
+      </p>
+    </div>
+
+    <div class="action-cards">
+      <po-widget
+        class="action-card"
+        p-title="Add New Customer"
+        [p-height]="200"
+      >
+        <div class="card-content">
+          <po-icon p-icon="po-icon-user-add" class="card-icon"></po-icon>
+          <p class="card-description">
+            Register a new customer with complete information including contact
+            details and addresses.
+          </p>
+          <po-button
+            p-label="Add Customer"
+            p-size="large"
+            (p-click)="navigateToNewClient()"
+          >
+          </po-button>
+        </div>
+      </po-widget>
+
+      <po-widget class="action-card" p-title="View Customers" [p-height]="200">
+        <div class="card-content">
+          <po-icon p-icon="po-icon-users" class="card-icon"></po-icon>
+          <p class="card-description">
+            Browse through your customer database, search, edit, and manage
+            existing customer records.
+          </p>
+          <po-button
+            p-label="View Customers"
+            p-size="large"
+            (p-click)="navigateToClientList()"
+          >
+          </po-button>
+        </div>
+      </po-widget>
+    </div>
+
+    <div class="stats-section">
+      <po-widget p-title="Quick Stats" [p-height]="120">
+        <div class="stats-content">
+          <div class="stat-item">
+            <span class="stat-number">0</span>
+            <span class="stat-label">Total Customers</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">0</span>
+            <span class="stat-label">Added This Month</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">0</span>
+            <span class="stat-label">Active Customers</span>
+          </div>
+        </div>
+      </po-widget>
+    </div>
+  </div>
+</po-page-default>

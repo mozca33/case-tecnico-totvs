@@ -25,17 +25,20 @@ public class Address {
     @Column(nullable = false)
     private String state;
 
-    @Column(nullable = false)
+    @Column(name = "zip_code",nullable = false)
     private String zipCode;
 
     @Column(nullable = false)
     private String street;
 
-    @Column(name = "public_place", nullable = false)
+    @Column(name = "public_place", nullable = true)
     private String publicPlace;
 
-    @Column
+    @Column(nullable = false)
     private String complement;
+
+    @Column(nullable = true)
+    private String number;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id")
@@ -44,13 +47,18 @@ public class Address {
     public Address() {
     }
 
-    public Address(String city, String state, String zipCode, String publicPlace, String street, String complement) {
+    public Address(String city, String state, String street, String complement, String zipCode, String number, String publicPlace) {
         this.city = city;
         this.state = state;
         this.zipCode = zipCode;
         this.publicPlace = publicPlace;
         this.street = street;
         this.complement = complement;
+        this.number = number;
+    }
+
+    public String getNumber() {
+        return number;
     }
 
     public String getComplement() {
@@ -87,6 +95,10 @@ public class Address {
 
     public void setPublicPlace(String publicPlace) {
         this.publicPlace = publicPlace;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
     }
 
     public void setComplement(String complement) {
@@ -129,5 +141,4 @@ public class Address {
         if (id == null)
             id = UUID.randomUUID();
     }
-
 }

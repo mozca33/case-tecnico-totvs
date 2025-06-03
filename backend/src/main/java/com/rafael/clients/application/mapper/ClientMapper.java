@@ -1,7 +1,6 @@
 package com.rafael.clients.application.mapper;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -71,16 +70,13 @@ public class ClientMapper {
         final Client client = new Client(dto.name(), dto.cpf());
 
         if (dto.phones() != null) {
-            Set<Phone> phones = phoneMapper.toEntity(dto.phones());
+            List<Phone> phones = phoneMapper.toEntity(dto.phones());
             client.setPhoneNumbers(phones);
-            phones.forEach(client::addPhone);
-
         }
 
         if (dto.addresses() != null) {
-            Set<Address> addresses = addressMapper.toEntity(dto.addresses());
+            List<Address> addresses = addressMapper.toEntity(dto.addresses());
             client.setAddresses(addresses);
-            addresses.forEach(client::addAddress);
         }
 
         return client;
@@ -91,17 +87,15 @@ public class ClientMapper {
         client.setId(id);
 
         if (dto.phones() != null) {
-            Set<Phone> phones = phoneMapper.toEntity(dto.phones());
+            List<Phone> phones = phoneMapper.toEntity(dto.phones());
             client.getPhoneNumbers().clear();
-            client.getPhoneNumbers().addAll(phones);
-            phones.forEach(client::addPhone);
+            client.setPhoneNumbers(phones);
         }
 
         if (dto.addresses() != null) {
-            Set<Address> addresses = addressMapper.toEntity(dto.addresses());
+            List<Address> addresses = addressMapper.toEntity(dto.addresses());
             client.getAddresses().clear();
-            client.getAddresses().addAll(addresses);
-            addresses.forEach(client::addAddress);
+            client.setAddresses(addresses);
         }
 
         return client;

@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { PoMenuItem } from '@po-ui/ng-components';
+import { MAIN_MENU_ITEMS } from './shared/constants/menu.constants';
+import { SamplePoMenuHumanResourcesService } from './core/services/sample-po-menu-human-resources.service';
 
 @Component({
   selector: 'app-root',
@@ -7,15 +9,22 @@ import { PoMenuItem } from '@po-ui/ng-components';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit{
   title = 'TOTVS Case Técnico';
+  isMenuCollapsed = false;
+  menuItemSelected: string = "";
+  isFilter: boolean = false;
 
-  readonly menus: Array<PoMenuItem> = [
-    { label: 'Home', action: this.onClick.bind(this) },
-    { label: 'Usuários', action: this.onClick.bind(this) },
-  ];
+  constructor(public samplePoMenuHumanResourcesService: SamplePoMenuHumanResourcesService) {}
 
-  private onClick() {
-    console.log('click');
+  ngOnInit(): void {
   }
+
+  toggleMenu(): void {
+    this.isMenuCollapsed = !this.isMenuCollapsed;
+  }
+
+  menus: Array<PoMenuItem> = [
+    { label: 'Client', icon: 'an an-user', shortLabel: 'Register', link: '/clients' },
+  ];
 }
