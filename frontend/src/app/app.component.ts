@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { PoMenuItem } from '@po-ui/ng-components';
-import { MAIN_MENU_ITEMS } from './shared/constants/menu.constants';
 import { SamplePoMenuHumanResourcesService } from './core/services/sample-po-menu-human-resources.service';
 
 @Component({
